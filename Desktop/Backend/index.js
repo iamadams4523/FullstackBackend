@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 const today = new Date();
 
 const persons = [
@@ -29,6 +31,13 @@ const note = `PhoneBook has info for ${persons.length} people
                 ${today}
 `;
 
+app.use(morgan('tiny'));
+
+app.use(bodyParser.json());
+morgan.token('body', (req) => {
+  return req.method === 'POST' ? JSON.stringify(req.body) : '';
+});
+
 app.get('/api/persons', (req, res) => {
   res.json(persons);
 });
@@ -56,27 +65,19 @@ app.delete('/api/notes/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const newPerson = req.body;
-
-  // Validate that the required fields are present
   if (!newPerson.name || !newPerson.number) {
     return res.status(400).json({ error: 'Name or number is missing' });
   }
 
-  // Check if the name already exists
   const nameExists = persons.some((person) => person.name === newPerson.name);
   if (nameExists) {
     return res.status(400).json({ error: 'Name must be unique' });
   }
 
-  // Generate a new unique ID using Math.random()
   const newId = Math.floor(Math.random() * 1000000);
-
   const personToAdd = { id: newId, ...newPerson };
-
-  // Add the new person to the array
   persons = persons.concat(personToAdd);
 
-  // Send the added person back as the response
   res.status(201).json(personToAdd);
 });
 
