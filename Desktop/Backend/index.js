@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const today = new Date();
 
 const persons = [
@@ -30,6 +31,8 @@ const persons = [
 const note = `PhoneBook has info for ${persons.length} people
                 ${today}
 `;
+
+app.use(cors());
 
 app.use(morgan('tiny'));
 
