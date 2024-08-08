@@ -32,6 +32,8 @@ const note = `PhoneBook has info for ${persons.length} people
                 ${today}
 `;
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(cors());
 
 app.use(morgan('tiny'));
@@ -84,7 +86,7 @@ app.post('/api/persons', (req, res) => {
   res.status(201).json(personToAdd);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
