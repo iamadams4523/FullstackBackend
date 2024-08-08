@@ -1,11 +1,12 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const today = new Date();
 
-const persons = [
+let persons = [
   {
     id: '1',
     name: 'Arto Hellas',
@@ -48,7 +49,7 @@ app.get('/api/persons', (req, res) => {
 });
 
 app.get('/api/info', (req, res) => {
-  res.json(note);
+  res.send(note);
 });
 
 app.get('/api/persons/:id', (req, res) => {
@@ -61,10 +62,10 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res) => {
+  // Fixed endpoint
   const id = req.params.id;
   persons = persons.filter((person) => person.id !== id);
-
   res.status(204).end();
 });
 
@@ -79,7 +80,7 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({ error: 'Name must be unique' });
   }
 
-  const newId = Math.floor(Math.random() * 1000000);
+  const newId = Math.floor(Math.random() * 1000000).toString();
   const personToAdd = { id: newId, ...newPerson };
   persons = persons.concat(personToAdd);
 
